@@ -5,15 +5,39 @@ title: |
 author: "Daniil Bulat, Jonas Josef Huwyler, Haochen Li,Giovanni Magagnin"
 date: "March 3, 2021"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 
 ```{r include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Exercise 1
+
+**
+Autonomous weapons are not operated with human involvement but utilize artificial intelligence instead. Autonomous weapons may present dangers:
+**
+
+The first concern is that, because of the plausible AI arms race, autonomous weapons could become as common as Kalashnikovs are today. With an army of autonomous weapons, the threshold to start a war might be lower, as theoretically fewer lives would be at risk as AI weapons compete against each other. Wars could therefore become more frequent in the future.
+
+The second concern is that, unlike nuclear weapons, they are relatively cheap and could last a long time with few maintenance costs. Autonomous weapons could easily fall into the wrong hands and become harmful to society. Autonomous weapons, for example, could be ideal for assassinations, destabilizing nations, subjugating populations, and selectively killing a particular ethnic group. This could lead to an increase in terror activities in the future.
+
+**
+Other dangers that machine learning / artificial intelligence can present are the followings:
+**
+
+Threats to individuals: Sophisticated machine-driven algorithms could be developed to exploit phishing scams. The target would not be able to distinguish whether they are dealing with a human or a fraudulent entity. Financial information, digital identity, and private data could be easily stolen. 
+
+Threats to the economy: Automated algorithms trading in financial markets could increase volatility, instability, and unintended systematic risks. They could also crowd out less experienced investors.
+
+Dangers to political stability: Democratic elections could be influenced by false ad hoc campaigns and messages. AI could be used for spreading political fundamentalism through targeted manipulation.
+
+Dangers of job loss: Due to the automation fostered by the development of AI, workers performing repetitive and predictable tasks could soon be replaced by AI. Since such work is often done by lower social classes, this could lead to massive job loss and social injustice. How will states and politics deal with this transition to prevent an uproar of social injustice as well as rejection towards AI.
+
+
+\newpage
 
 # Exerceise 2
 **
