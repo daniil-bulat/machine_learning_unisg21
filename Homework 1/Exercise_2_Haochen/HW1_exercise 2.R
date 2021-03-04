@@ -66,9 +66,14 @@ var(Data.Train$Petal.Width)
 
 # Bonus Question ----------------------------------------------------------
 
+# Use the mean and variance commands to compute (or verify) the
+# regression function for part 2) step by step without the lm-command
+
+# Apply the formula for simple linear regression
 beta.hat = var(Data.Train$Sepal.Length,Data.Train$Petal.Length)/var(Data.Train$Petal.Length)
 alpha.hat = mean(Data.Train$Sepal.Length) - beta.hat*mean(Data.Train$Petal.Length)
 
+# Check the coefficients computed and compare them with part 2
 alpha.hat
 beta.hat
 Iris.Model2$coefficients

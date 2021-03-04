@@ -1,16 +1,29 @@
 ---
-title: "Homework 1"
-author: "Haochen Li"
-date: "Mar 3, 2021"
-output: 
-  md_document:
-    variant: markdown_github
+title: |
+  | Mahcine Learning, Spring 2021
+  | Homework 1
+author: "Daniil Bulat, Jonas Josef Huwyler, Haochen Li,Giovanni Magagnin"
+date: "March 3, 2021"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
 ---
-# Exerceise 2
+
+
 ```{r include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Exerceise 2
+**
+Have a look at the file *lin_reg_iris_first_steps.R1* on StudyNet (Course Resources) and make sure you
+understand all commands used in there. For comparability of the results please add the line *set.seed(123)*
+in the beginning of the file. This will make the sample command return the same results every time you use
+it.
+**
+
+The following is the basic setup for solving the exercise.
 ```{r}
 # Set up
 rm(list = ls())
@@ -26,7 +39,12 @@ Data.Test = Data[121:150,]
 
 ## Qestion 1: 
 
-Determine the Determine the linear regression function in the form f(x1; x2) = m1x1 + m2x2 + c for predicting Sepal.Length depending on x1 =Petal.Length and x2 =Petal.Width on the training data.
+**
+Determine the linear regression function in the form f(x1; x2) = m1x1 + m2x2 + c for predicting Sepal.Length depending on x1 =Petal.Length and x2 =Petal.Width on the training data.
+**
+
+The result below shows that the linear regression function for predicting would be 
+$$Sepal.Length = 4.17 + 0.54*Petal.Length - 0.31*Petal.Width$$
 
 ```{r}
 # Regression on the training data - Model 1: f(x1; x2) = m1x1 + m2x2 + c
@@ -36,7 +54,12 @@ summary(Iris.Model1)
 
 ## Question 2:
 
+**
 Do the same for only one attribute, x1 =Petal.Length on the training data.
+**
+
+The result below shows that the linear regression function for predicting would be
+$$Sepal.Length = 4.28 + 0.41*Petal.Length$$
 
 ```{r}
 # Regression on the training data - Model 2: f(x1) = m1x1 + c
@@ -46,8 +69,13 @@ summary(Iris.Model2)
 ```
 
 ## Question 3:
+**
 Do the same for the three attributes, x1 =Petal.Length, x2 =Petal.Width, x3 =Sepal.Width on the training data.
+**
 
+The result below shows that the linear regression function for predicting would be 
+$$Sepal.Length = \\
+1.90 + 0.70*Petal.Length - 0.53*Petal.Width + 0.64*Sepal.Width$$
 ```{r}
 # Regression on the training data - Model 3: f(x1; x2; x3) = m1x1 + m2x2 + m3x3 + c
 Iris.Model3 = lm(Sepal.Length ~ Petal.Length + Petal.Width + Sepal.Width, data = Data.Train)
@@ -55,8 +83,17 @@ summary(Iris.Model3)
 ```
 
 ## Question 4:
-
+**
 Find the commands for mean and variance in R and compute the mean and the variance of Petal.Length and Petal.Width, respectively.
+**
+
+By using the commands from R, the mean of variance can be shown as following:
+
+|              | Mean   | Variance |
+|  :----:      | :----: |  :----:  |
+| Petal.Length | 3.81   |   3.22   |
+| Petal.Width  | 1.22   |   0.60   |
+
 
 ```{r}
 mean(Data.Train$Petal.Length)
@@ -64,12 +101,25 @@ var(Data.Train$Petal.Length)
 ```
 
 ```{r}
-mean(Data.Train$Petal.Length)
-var(Data.Train$Petal.Length)
+mean(Data.Train$Petal.Width)
+var(Data.Train$Petal.Width)
 ```
 
 ## Bonus Question:
+**
 Use the mean and variance commands to compute (or verify) the regression function for part 2) step by step without the lm-command, using the formula for simple linear regression.
+**
+
+Using the formula to solve the minimization problem of simple linear regression:
+$$
+\hat{\alpha} = \bar{y} -(\hat{\beta} \bar{x}) 
+$$
+$$
+\hat{\beta} = \frac{\sum^n_{i=1}(x_i-\bar{x})(y_i-\bar{y})}{\sum^n_{i=1}(x_i-\bar{x})^2} = \frac{Cov(x,y)}{Var(x)}
+$$
+The regression coefficients calculated by mean and variance are identical to the lm-command:
+$$Sepal.Length = 4.28 + 0.41*Petal.Length$$
+
 
 ```{r}
 beta.hat = var(Data.Train$Sepal.Length,Data.Train$Petal.Length)/var(Data.Train$Petal.Length)
