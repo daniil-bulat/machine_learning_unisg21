@@ -50,6 +50,7 @@ rss_pred = sum((Data.Test$Sepal.Length - pred)^2)
 # TSS
 mean_test = mean(Data.Test$Sepal.Length)
 tss_pred = sum((pred - mean_test)^2)
+TSS.test = sum((Data.Test$Sepal.Length - mean(Data.Test$Sepal.Length))^2)
 # RSE 
 rse_pred = sqrt(rss_1/(30-2))
 # R^2
