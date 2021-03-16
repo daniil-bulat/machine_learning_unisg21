@@ -117,7 +117,7 @@ start = Sys.time()
 gd(NumIt, weights)
 finish = Sys.time()
 run_time = finish - start
-print(paste0("For Batch = 506, run time =", run_time))
+print(paste0("Batch = 506 and epochs = 20, run time =", run_time))
 
 
 # Batch = 32, epochs = 20
@@ -125,7 +125,7 @@ start = Sys.time()
 mbgd(NumIt, weights, 32, leng)
 finish = Sys.time()
 run_time = finish - start
-print(paste0("For Batch = 32, run time =", run_time))
+print(paste0("Batch = 32 and epochs = 20, run time =", run_time))
 
 
 ## Run Time General Algorithm
@@ -134,21 +134,21 @@ start = Sys.time()
 gd_algo(NumIt,weights,506,leng)
 finish = Sys.time()
 run_time = finish - start
-print(paste0("For Batch = 506, and epochs = 1-20, run time =", run_time))
+print(paste0("Batch = 506 and epochs = 1-20, run time =", run_time))
 
 # Batch = 506, epochs = 1-20 (fixed batch size)
 start = Sys.time()  
 gd_algo2(NumIt,weights)
 finish = Sys.time()
 run_time = finish - start
-print(paste0("For Batch = 506, and epochs = 1-20, run time =", run_time))
+print(paste0("Batch = 506 and epochs = 1-20, run time =", run_time))
 
 # Batch = 32, epochs = 1-20
 start = Sys.time()  
 gd_algo(NumIt,weights,32,leng)
 finish = Sys.time()
 run_time = finish - start
-print(paste0("For Batch = 32 and epochs = 1-20, run time =", run_time))
+print(paste0("Batch = 32 and epochs = 1-20, run time =", run_time))
 
 
 
