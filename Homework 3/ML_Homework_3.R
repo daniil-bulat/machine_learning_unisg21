@@ -9,35 +9,46 @@
 
 ## Functions
 gd = function(NumIt, weights){
+  RSS = c()
+  NumoIt = c()
   for (i in 1:NumIt) {
     yhat=Data$lstat*weights[2]+weights[1]
     error =  Data$medv  - yhat
     weights[1] = weights[1] + 2*eta*sum(error)
     weights[2] = weights[2] + 2*eta*(error%*%Data$lstat)
+    RSS[i] = error%*%error
+    NumoIt[i] = i
   }
-  RSS = error%*%error
-  RSE = sqrt(RSS/(leng-2))
-  output_list = list("weights"=weights,"RSS"=RSS,"RSE"=RSE)
+  output_list = list("Iteration"=NumoIt,"RSS"=RSS)
   return(output_list)
 }
 
 mbgd = function(NumIt, weights, batch, leng){
-  for (j in 1:floor(leng/batch)){
-    for (i in 1:NumIt) {
-      yhat=Data$lstat[((j-1)*batch+1):(j*batch)]*weights[2]+weights[1]
-      error =  Data$medv[((j-1)*batch+1):(j*batch)]  - yhat
+  RSS = c()
+  NumoIt = c()
+  for (i in 1:NumIt){
+    for (j in 1:floor(leng/batch)){
+      if (j < 16){
+        Data.Train = Data[((j-1)*batch+1):(j*batch),]
+      } else {
+        j=16
+        Data.Train = Data[((j-1)*batch+1):nrow(Data),]
+      }
+      yhat = Data.Train$lstat*weights[2]+weights[1]
+      error =  Data.Train$medv - yhat
       weights[1] = weights[1] + 2*eta*sum(error)
-      weights[2] = weights[2] + 2*eta*(error%*%Data$lstat[((j-1)*batch+1):(j*batch)])
+      weights[2] = weights[2] + 2*eta*(error%*%Data.Train$lstat)
     }
+    yhat = Data$lstat*weights[2]+weights[1]
+    error = Data$medv  - yhat
+    RSS[i] = error%*%error
+    NumoIt[i] = i
   }
-  RSS = error%*%error
-  RSE = sqrt(RSS/(leng-2))
-  output_list = list("weights"=weights,"RSS"=RSS,"RSE"=RSE)
+  output_list = list("Iteration"=NumoIt,"RSS"=RSS)
   return(output_list)
 }
 
-
-gd_plot = function(NumIt,weights,batch,leng){
+#gd_plot = function(NumIt,weights,batch,leng){
   NumOfIt = c(1:NumIt)
   rss_itr = c()
   for (i in 1:NumIt){
@@ -47,8 +58,7 @@ gd_plot = function(NumIt,weights,batch,leng){
   plot(NumOfIt, rss_itr, type="b", ylab="RSS")
 }
 
-
-gd_algo = function(NumIt,weights,batch,leng){
+#gd_algo = function(NumIt,weights,batch,leng){
   NumOfIt = c(1:NumIt)
   rss_itr = c()
   for (i in 1:NumIt){
@@ -57,7 +67,7 @@ gd_algo = function(NumIt,weights,batch,leng){
   }
 }
 
-gd_algo2 = function(NumIt,weights){
+#gd_algo2 = function(NumIt,weights){
   NumOfIt = c(1:NumIt)
   rss_itr = c()
   for (i in 1:NumIt){
@@ -70,6 +80,9 @@ gd_algo2 = function(NumIt,weights){
 ## Data Preparation Boston Data Set
 library(MASS)
 Data = Boston[c("medv", "lstat")]
+
+# Set Seed
+set.seed(123)
 
 # Shuffle the data for better performance
 Data = Data[sample(1:nrow(Data)),]
@@ -87,19 +100,26 @@ NumIt = 20 # Number of epochs
 batch = 32 # Batch size
 leng = nrow(Data)
 
-mbgd(NumIt, weights, batch, leng)
+mini_batch = mbgd(NumIt, weights, batch, leng)
 
 
 ### 2. Plot a learning curve for your mini-batch gradient descent algorithm, where the learning performance
 ### is measured by the RSS and the experience is given by the number of epochs/iterations, from 1 to 20.
 
-gd_plot(NumIt,weights,batch,leng)
+plot(mini_batch$Iteration,mini_batch$RSS,type='b',xlab='Iteration',ylab='RSS')
 
 ### 3. Plot a learning curve for the full gradient descent algorithm, where the learning performance is measured
 ### by the RSS and the experience is given by the number of epochs/iterations, from 1 to 20.
-
+weights = c(30,0)
 batch = leng
-gd_plot(NumIt,weights,batch,leng)
+
+# adjustable batch
+fgd = mbgd(NumIt, weights, batch, leng)
+plot(fgd$Iteration,fgd$RSS,type='b',xlab='Iteration',ylab='RSS')
+
+# full batch
+fgd = gd(NumIt, weights)
+plot(fgd$Iteration,fgd$RSS,type='b',xlab='Iteration',ylab='RSS')
 
 ### 4. Compare your results. Which combination of batch size (32 or 506) and number of epochs/iterations
 # ##would you recommend?
@@ -112,43 +132,20 @@ gd_plot(NumIt,weights,batch,leng)
 ### of epochs.
 
 ## Run Time Specific Algorithm
-# Batch = 506, epochs = 20
+# Batch = 506, epochs = 1-20
 start = Sys.time()  
-gd(NumIt, weights)
+t=gd(NumIt, weights)
 finish = Sys.time()
 run_time = finish - start
 print(paste0("Batch = 506 and epochs = 20, run time =", run_time))
 
 
-# Batch = 32, epochs = 20
+# Batch = 32, epochs = 1-20
 start = Sys.time()  
-mbgd(NumIt, weights, 32, leng)
+t=mbgd(NumIt, weights, 32, leng)
 finish = Sys.time()
 run_time = finish - start
 print(paste0("Batch = 32 and epochs = 20, run time =", run_time))
-
-
-## Run Time General Algorithm
-# Batch = 506, epochs = 1-20 (variable batch size)
-start = Sys.time()  
-gd_algo(NumIt,weights,506,leng)
-finish = Sys.time()
-run_time = finish - start
-print(paste0("Batch = 506 and epochs = 1-20, run time =", run_time))
-
-# Batch = 506, epochs = 1-20 (fixed batch size)
-start = Sys.time()  
-gd_algo2(NumIt,weights)
-finish = Sys.time()
-run_time = finish - start
-print(paste0("Batch = 506 and epochs = 1-20, run time =", run_time))
-
-# Batch = 32, epochs = 1-20
-start = Sys.time()  
-gd_algo(NumIt,weights,32,leng)
-finish = Sys.time()
-run_time = finish - start
-print(paste0("Batch = 32 and epochs = 1-20, run time =", run_time))
 
 
 
