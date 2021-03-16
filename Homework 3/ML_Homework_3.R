@@ -6,9 +6,6 @@
 ###############################################################################
 
 #### Exercise 1
-#### Consider the Boston data set again, modeling medv in dependence of lstat. Fix the learning rate
-#### n = 0.000009. Set the initial values of the weights as (b_0, b_1) = (30, 0)
-#### (this makes it converge more quickly than (0, 0)).
 
 ## Functions
 gd = function(NumIt, weights){
@@ -47,8 +44,6 @@ gd_algo = function(NumIt,weights,batch,leng){
     rss_itr[i] = output$RSS
   }
 }
-
-
 
 gd_algo2 = function(NumIt,weights){
   NumOfIt = c(1:NumIt)
@@ -121,13 +116,16 @@ plot(NumOfIt, rss_itr, type="b", ylab="RSS")
 start = Sys.time()  
 gd(NumIt, weights)
 finish = Sys.time()
-finish - start
+run_time = finish - start
+print(paste0("For Batch = 506, run time =", run_time))
+
 
 # Batch = 32, epochs = 20
 start = Sys.time()  
 mbgd(NumIt, weights, 32, leng)
 finish = Sys.time()
-finish - start
+run_time = finish - start
+print(paste0("For Batch = 32, run time =", run_time))
 
 
 ## Run Time General Algorithm
@@ -135,19 +133,22 @@ finish - start
 start = Sys.time()  
 gd_algo(NumIt,weights,506,leng)
 finish = Sys.time()
-finish - start
+run_time = finish - start
+print(paste0("For Batch = 506, run time =", run_time))
 
 # Batch = 506, epochs = 1-20 (fixed batch size)
 start = Sys.time()  
 gd_algo2(NumIt,weights)
 finish = Sys.time()
-finish - start
+run_time = finish - start
+print(paste0("For Batch = 506, and epochs = 1-20, run time =", run_time))
 
 # Batch = 32, epochs = 1-20
 start = Sys.time()  
 gd_algo(NumIt,weights,32,leng)
 finish = Sys.time()
-finish - start
+run_time = finish - start
+print(paste0("For Batch = 32 and epochs = 1-20, run time =", run_time))
 
 
 
