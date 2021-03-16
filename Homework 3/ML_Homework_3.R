@@ -1,10 +1,14 @@
-# Machine Learning Homework 3
+###############################################################################
+## Filename: Machine Learning - Homework 3
+## Topic: Homework 2
+## Author: Jonas Huwyler, Haochen Li, Giovanni Magagnin, Daniil Bulat
+## Matriculation Number: 16-610-958, 20-621-926, 17-300-914, 14-607-055
+###############################################################################
 
-
-# Exercise 1
-# Consider the Boston data set again, modeling medv in dependence of lstat. Fix the learning rate
-# n = 0.000009. Set the initial values of the weights as (b_0, b_1) = (30, 0)
-# (this makes it converge more quickly than (0, 0)).
+#### Exercise 1
+#### Consider the Boston data set again, modeling medv in dependence of lstat. Fix the learning rate
+#### n = 0.000009. Set the initial values of the weights as (b_0, b_1) = (30, 0)
+#### (this makes it converge more quickly than (0, 0)).
 
 ## Functions
 gd = function(NumIt, weights){
