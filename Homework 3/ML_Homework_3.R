@@ -36,6 +36,18 @@ mbgd = function(NumIt, weights, batch, leng){
   return(output_list)
 }
 
+
+gd_plot = function(NumIt,weights,batch,leng){
+  NumOfIt = c(1:NumIt)
+  rss_itr = c()
+  for (i in 1:NumIt){
+    output = mbgd(i, weights,batch,leng)
+    rss_itr[i] = output$RSS
+  }
+  plot(NumOfIt, rss_itr, type="b", ylab="RSS")
+}
+
+
 gd_algo = function(NumIt,weights,batch,leng){
   NumOfIt = c(1:NumIt)
   rss_itr = c()
@@ -80,26 +92,14 @@ mbgd(NumIt, weights, batch, leng)
 
 ### 2. Plot a learning curve for your mini-batch gradient descent algorithm, where the learning performance
 ### is measured by the RSS and the experience is given by the number of epochs/iterations, from 1 to 20.
-NumOfIt = c(1:NumIt)
-rss_itr = c()
-for (i in 1:NumIt){
-  output = mbgd(i,weights,batch,leng)
-  rss_itr[i] = output$RSS
-}
 
-plot(NumOfIt, rss_itr, type="b", ylab="RSS")
+gd_plot(NumIt,weights,batch,leng)
 
 ### 3. Plot a learning curve for the full gradient descent algorithm, where the learning performance is measured
 ### by the RSS and the experience is given by the number of epochs/iterations, from 1 to 20.
-NumOfIt = c(1:NumIt)
-rss_itr = c()
-batch = leng
-for (i in 1:NumIt){
-  output = mbgd(i, weights,batch,leng)
-  rss_itr[i] = output$RSS
-}
 
-plot(NumOfIt, rss_itr, type="b", ylab="RSS")
+batch = leng
+gd_plot(NumIt,weights,batch,leng)
 
 ### 4. Compare your results. Which combination of batch size (32 or 506) and number of epochs/iterations
 # ##would you recommend?
@@ -134,7 +134,7 @@ start = Sys.time()
 gd_algo(NumIt,weights,506,leng)
 finish = Sys.time()
 run_time = finish - start
-print(paste0("For Batch = 506, run time =", run_time))
+print(paste0("For Batch = 506, and epochs = 1-20, run time =", run_time))
 
 # Batch = 506, epochs = 1-20 (fixed batch size)
 start = Sys.time()  
