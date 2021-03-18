@@ -1,9 +1,25 @@
-# Univeristy of St.Gallen
-# 8330 Mahcine Learning, 2021 Spring
-# Homework 3
-# Mar 15, 2021
+---
+title: |
+  | Machine Learning, Spring 2021
+  | Homework 3
+author: "Daniil Bulat, Jonas Josef Huwyler, Haochen Li,Giovanni Magagnin"
+date: "3/18/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
 
 
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Exercise 1
+
+**
+Consider the Boston data set again, modeling *medv* in depdence of *lstat*. Fix the learning rage $eta = 0.000009$. Set the initial values of the weights as $(\beta_0,\beta_1) = (30,0)$.
+**
+
+```{r}
 # Removing all variables/functions
 rm(list = ls())
 
@@ -25,7 +41,18 @@ library(MASS)
 Data = Boston[c("medv", "lstat")]
 # Shuffle the data for (likely) better performance
 Data = Data[sample(1:nrow(Data)),]
+```
 
+
+\newpage
+
+## Question 1
+
+**
+Write a mini-batch gradient descent algorithm for batch size 32 with 20 epochs/iterations for the Boston data set.
+**
+
+```{r}
 # Question 1 --------------------------------------------------------------
 
 # Number of batch size for the algorithm
@@ -77,18 +104,45 @@ yhat=Data$lstat*weights[2]+weights[1]
 error =  Data$medv  - yhat
 
 # Final output
-print(weights)
+sprintf("The final updated weights is (%.3f,%.3f)",weights[1],weights[2])
 RSS = error%*%error
-print(RSS)
+sprintf("The corresponding RSS is %.3f",RSS)
 RSE = sqrt(RSS/(nrow(Data)-2))
-print(RSE)
+sprintf("The corresponding RSE is %.3f",RSE)
+```
 
+
+\newpage
+
+
+## Question 2
+
+**
+Plot a learning curve for your mini-batch gradient descent algorithm, where the learning performance is measured by the RSS and the experience is given by the number of epochs/iterations, from 1 to 20.
+**
+
+```{r}
 # Question 2 --------------------------------------------------------------
 
 #Plot the learning curve for the MBGD algo
-plot(NumOfIt,NumOfRSS, type="b", main = "Learning Curve of Mini-Batch Gradient Descent Algorithm")
+plot(NumOfIt,NumOfRSS, 
+     type="b", 
+     main = "Learning Curve of Mini-Batch Gradient Descent Algorithm",
+     xlab = "Number of epochs/iterations",
+     ylab = "RSS")
+```
 
 
+\newpage
+
+
+## Question 3
+
+**
+Plot a learning curve for the full gradient descent algorithm, where the learning Performance is measured by the RSS and the experience is given by the number of epochs/iterations, from 1 to 20.
+**
+
+```{r}
 # Question 3 --------------------------------------------------------------
 
 # Reset weights and lists to store
@@ -125,28 +179,61 @@ yhat=Data$lstat*weights[2]+weights[1]
 error =  Data$medv  - yhat
 
 # Final output
-print(weights)
+sprintf("The final updated weights is (%.3f,%.3f)",weights[1],weights[2])
 RSS = error%*%error
-print(RSS)
+sprintf("The corresponding RSS is %.3f",RSS)
 RSE = sqrt(RSS/(nrow(Data)-2))
-print(RSE)
+sprintf("The corresponding RSE is %.3f",RSE)
 
 #Plot the learning curve for the FGD algo
-plot(NumOfIt,NumOfRSS, type="b", main = "Learning Curve of Full Gradient Descent Algorithm")
+plot(NumOfIt,NumOfRSS, 
+     type="b", 
+     main = "Learning Curve of Full Gradient Descent Algorithm",
+     xlab = "Number of epochs/iterations",
+     ylab = "RSS")
+```
 
-# Question 4 --------------------------------------------------------------
 
-# I would recommend MBGD since it generates a sampler RSS and RSE with the same 20 iterations.
 
+\newpage
+
+## Question 4
+
+**
+Compare your results. Which combination of batch size (32 or 506) and number of epochs/iterations would you recommend?
+**
+
+After running the two algorithms for the same number of epochs, we can find the difference between the learning performances of two algorithms. The RSS of Mini-Batch gradient descent algorithm is around 21847, which is lower than the RSS of the full gradient descent algorithm 24363. Given this evidence, we would recommend the mini-batch gradient descent algorithm since it has a better learning performance.
+
+## Question 5
+
+**
+Measure the run time of the full gradient descent algorithm (batch size 506) and the mini-batch gradient descent algorithm (batch size 32) for 20 epochs/iterations. Compare the two results.
+**
+
+```{r}
 # Question 5 --------------------------------------------------------------
 
 MBGD.time = MBGD.end - MBGD.start
-cat("The run time of MBGD for 20 epochs is",MBGD.time, "secs")
+sprintf("The run time of MBGD for 20 epochs is %.3f secs",MBGD.time)
 FGD.time = FGD.end - FGD.start
-cat("The run time of FGD for 20 epochs is",FGD.time, "secs")
-cat("The time difference is",abs(FGD.time - MBGD.time), "secs")
+sprintf("The run time of FGD for 20 epochs is %.3f secs",FGD.time)
+sprintf("The time difference is %.3f secs",abs(FGD.time - MBGD.time))
+```
+
+From the results above, we can find that the mini-batch gradient descent algorithm is slower than the full gradient descent algorithm when the epochs number is set to be 20. This is easy to be understood, the mini-batch gradient descent algorithm conducts more loops than the other algorithm in one epoch and loops cost time. Intuitively, the stochastic gradient descent algorithm would cost even more time the two algorithm we have discussed, since it will include more loops in one epoch.
 
 
+
+\newpage
+
+## Challenge Quesiton
+
+**
+Wrtie a general algorithm with a variable batch size and number of epochs.
+**
+
+```{r}
 
 # Challenge ---------------------------------------------------------------
 
@@ -221,3 +308,6 @@ algo <- function(BatSize,NumIt){
 algo(32,20)
 
 algo(506,20)
+
+```
+
