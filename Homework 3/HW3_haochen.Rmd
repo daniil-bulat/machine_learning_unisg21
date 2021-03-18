@@ -80,7 +80,8 @@ for (i in 1:NumIt){
       Data.Train = Data[((j-1)*BatSize+1):nrow(Data),]
     }
     
-    # calculate stochastic descent algorithm for the specified mini batch in specified epoch
+    # calculate stochastic descent algorithm for the specified mini batch 
+    # in specified epoch
     yhat = Data.Train$lstat*weights[2]+weights[1]
     error = Data.Train$medv - yhat
     weights[1] = weights[1] + 2*eta*sum(error)
@@ -203,7 +204,31 @@ plot(NumOfIt,NumOfRSS,
 Compare your results. Which combination of batch size (32 or 506) and number of epochs/iterations would you recommend?
 **
 
-After running the two algorithms for the same number of epochs, we can find the difference between the learning performances of two algorithms. The RSS of Mini-Batch gradient descent algorithm is around 21847, which is lower than the RSS of the full gradient descent algorithm 24363. Given this evidence, we would recommend the mini-batch gradient descent algorithm since it has a better learning performance.
+After running the two algorithms for the same number of epochs, we find the difference between the learning performances of two algorithms. The RSS of the Mini-Batch gradient descent algorithm is at around 21847, which is lower than the RSS of the full gradient descent algorithm which is at 24363. Based on the RSS we would recommend the mini-batch gradient descent algorithm since it has a better learning performance.
+
+To find a good number of iterations we must find a point, where when we increase the iterations the RSS will only change by a little. The number of iterations depends on the application and the computing cost / capacity available, but since our data set is rather small this is not an issue for us.
+
+If we increase the iterations, we can see when the learning curves start to get flat, that is where the RSS starts changing by less, per added iteration. In the graphs below we see that that point is at around 1000 iterations for a batch size of 32 and at around 30 iterations for batch size of 506.
+
+```{r, echo=FALSE,out.width="49%", out.height="50%",fig.cap="Running time v.s. Learning curves",fig.show='hold',fig.align='center'}
+knitr::include_graphics(c("figure1.png","figure2.png"))
+``` 
+
+If we compare the learning curve to the run times of the algorithms, we find
+
+| Number of Iterations | Batch Size | Run Time (secs) |
+|----------------------|------------|----------|
+| 1                    | 32         | 0.0036   |
+| 20                   | 32         | 0.0254   |
+| 1000                 | 32         | 0.6355   |
+| 1                    | 506        | 0.0012   |
+| 20                   | 506        | 0.0046   |
+| 30                   | 506        | 0.0060   |
+  
+With increasing iterations, run times go up. The trade-off in run time vs. learning curve is much larger with full gradient descent than with mini-batch gradient descent. As computing power is not an issue with this data set we can use large numbers of iterations, but with larger data sets one would have to construct a model that is well suited for the specific project.
+
+\newpage
+
 
 ## Question 5
 
@@ -237,7 +262,8 @@ Wrtie a general algorithm with a variable batch size and number of epochs.
 
 # Challenge ---------------------------------------------------------------
 
-# Notice this algo is only for the Boston data since we don't allow other input to be variable
+# Notice this algo is only for the Boston data since we don't allow other input 
+# to be variable
 
 # reset weights
 weights = c(30,0)
@@ -263,7 +289,8 @@ algo <- function(BatSize,NumIt){
         Data.Train = Data[((j-1)*BatSize+1):nrow(Data),]
       }
       
-      # calculate stochastic descent algorithm for the specified mini batch in specified epoch
+      # calculate stochastic descent algorithm for the specified mini batch 
+      # in specified epoch
       yhat = Data.Train$lstat*weights[2]+weights[1]
       error = Data.Train$medv - yhat
       weights[1] = weights[1] + 2*eta*sum(error)
