@@ -9,9 +9,13 @@ class = data.frame(x1,x2)
 class_1 = subset(class , (class$x1 < -4) & (class$x2 < -4))
 class_1$y = 1
 class_2 = subset(class , (class$x1 > -4) & (class$x1 < -2) & (class$x2 > -4) & (class$x2 < -2))
+class_2$y = 2
 class_3 = subset(class , (class$x1 > -2) & (class$x1 < 0) & (class$x2 > -2) & (class$x2 < 0))
+class_3$y = 3
 class_4 = subset(class , (class$x1 > 0) & (class$x1 < 2) & (class$x2 > 0) & (class$x2 < 2))
+class_4$y = 4
 class_5 = subset(class , (class$x1 > 2) & (class$x1 < 5) & (class$x2 > 2) & (class$x2 < 5))
+class_5$y = 5
 
 data = rbind(class_1,class_2,class_3,class_4,class_5)
 
@@ -57,8 +61,8 @@ standFun = function(x){
   return(out)
 }
 
-Data$x = standFun(Data$x)
-Data$y = standFun(Data$y)
+Data$x1 = standFun(Data$x1)
+Data$x2 = standFun(Data$x2)
 
 
 
@@ -89,10 +93,10 @@ w = rep(0, 2 + 1)
 
 for (i in 1:n){
   
-  xi = as.numeric(D[i, ])  
+  xi = as.numeric(D[i,1:2])  
   # The x data from obs i, note that this is a vector with two elements
   
-  yi = D$Label[i]                      
+  yi = D$y[i]                      
   # The y value from obs i
   
   index = w[1] + w[2]*xi[1] + w[3]*xi[2]
@@ -134,23 +138,23 @@ for (i in 1:n){
 # Now we calculate predictions for all i based on the LAST ITERATION
 # for the weights
 
-D$lastIndex = w[1] + w[2]*D[[features[1]]] + w[3]*D[[features[2]]]
+D$lastIndex = w[1] + w[2]*D$x1 + w[3]*D$x2
 
 D$lastPrediction = ifelse(D$lastIndex >=decCrit, 1, -1)
 
-D$lastError  = D$Label - D$lastPrediction
+D$lastError  = D$y - D$lastPrediction
 
 
 # Number of misclassified cases (in % of total sample)
 misclas = round(sum(D$lastError!=0)/nrow(D)*100, digits = 1)
 
 # False positives (in % of negatives)
-x = ifelse(D$lastPrediction == 1 & D$Label == -1, 1, 0)
-falPos = round(sum(x)/length(D$Label[D$Label == -1])*100, digits = 1)
+x = ifelse(D$lastPrediction == 1 & D$y == -1, 1, 0)
+falPos = round(sum(x)/length(D$y[D$y == -1])*100, digits = 1)
 
 # False negatives (in % of positives)
-x = ifelse(D$lastPrediction == -1 & D$Label == 1, 1, 0)
-falNeg = round(sum(x)/length(D$Label[D$Label == 1])*100, digits = 1)
+x = ifelse(D$lastPrediction == -1 & D$y == 1, 1, 0)
+falNeg = round(sum(x)/length(D$y[D$y == 1])*100, digits = 1)
 
 
 
@@ -166,9 +170,9 @@ negColbg = "#9ed9f7"  # Background color for area predicted -1
 
 
 # First an empty plot as "canvas", to add the rest
-plot(Data[[features[1]]], Data[[features[2]]], type = "n",
-     xlab = features[1], ylab = features[2], cex = 1,
-     main = paste0("Errors with critical index value of ", decCrit," (perceptron learning)"),
+plot(Data$x1, Data$x2, type = "n",
+     xlab = "Attribute 1", ylab = "Attribute 2", cex = 1,
+     main = paste0("Linear Seperation"),
      cex.main = 1.1)
 
 
@@ -210,11 +214,11 @@ points(toPaint$xgrid[toPaint$prediction == -1], toPaint$ygrid[toPaint$prediction
        pch=c(16), col=negColbg, cex =bgptsize)
 
 # The "positive" data points
-points(Data[[features[1]]][Data$Label == 1], Data[[features[2]]][Data$Label == 1], 
+points(Data$x1[Data$y == 1], Data$x2[Data$y == 1], 
        pch=16, col=posCol, cex = dataptsize)
 
 # The "negative" data points
-points(Data[[features[1]]][Data$Label == -1], Data[[features[2]]][Data$Label == -1], 
+points(Data$x1[Data$y == -1], Data$x2[Data$y == -1], 
        pch=16, col=negCol,  cex = dataptsize)
 
 
