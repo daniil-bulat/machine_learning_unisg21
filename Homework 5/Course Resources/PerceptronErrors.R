@@ -9,7 +9,7 @@
 ## PLEASE ADJUST YOUR WORKING DIRECTORY
 rm(list = ls())
 #mainDir = "D:\\OneDrive\\Weitere Kurse\\Machine Learning und KI\\Scripts Base Topics"
-mainDir = "C:/Users/ahorlemann/Dropbox/Unizeugs/Machine Learning/R Skripte"
+mainDir = "/Users/danielbulat/Desktop/Uni/FS21/Machine Learning/ML_Git/Homework 5/Course Resources"
 setwd(mainDir)
 
 
@@ -28,7 +28,7 @@ seedVal = 12
 
 # The data (Make sure they are in the proper working directory)
 
-load("../Data/wdbcData.RData") 
+load("wdbcData.RData")
 
 # Assign numerical value to labels
 Data$Label = ifelse(Data$diagnosis == "B", -1, 1)
