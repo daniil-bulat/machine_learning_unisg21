@@ -1,48 +1,43 @@
-set.seed(777)
-s = seq(from = -5, to = 5, by = 0.01)
-x1 = sample(s,200, replace = TRUE)
-x2 = sample(s,200, replace = TRUE)
-
-
-class = data.frame(x1,x2)
-
-class_1 = subset(class , (class$x1 < -4) & (class$x2 < -4))
-class_1$y = 1
-class_2 = subset(class , (class$x1 > -4) & (class$x1 < -2) & (class$x2 > -4) & (class$x2 < -2))
-class_2$y = 2
-class_3 = subset(class , (class$x1 > -2) & (class$x1 < 0) & (class$x2 > -2) & (class$x2 < 0))
-class_3$y = 3
-class_4 = subset(class , (class$x1 > 0) & (class$x1 < 2) & (class$x2 > 0) & (class$x2 < 2))
-class_4$y = 4
-class_5 = subset(class , (class$x1 > 2) & (class$x1 < 5) & (class$x2 > 2) & (class$x2 < 5))
-class_5$y = 5
-
-data = rbind(class_1,class_2,class_3,class_4,class_5)
-
-
-
-
-
-
-
-
-
-
-
-# Set parameters and Prepare data
-#################################
-
+rm(list = ls())
+mainDir = "/Users/danielbulat/Desktop/Uni/FS21/Machine Learning/ML_Git/Homework 5/Course Resources"
+setwd(mainDir)
 
 # Parameters
 
-eta = 0.1
+fracTest = 0.3
 
-decCrit = -5
+decCrit = 1
 
-seedVal = 12
+eta = 0.01
+
+seedVal = 7
+
+# Load Data
+library(datasets)
+library(dplyr)
+
+data(iris)
+
+iris = iris[,3:5] # remove unnecessary features
+
+datasz = iris
 
 
-Data = data
+
+
+
+# drop third species
+species = c("setosa", "versicolor", "virginica")
+
+Data = filter(datasz, Species != "versicolor")
+
+
+
+# Assign numerical value to labels
+Data$Label = ifelse(Data$Species == "setosa", -1, 1)
+
+# Give generic name to features
+features = c(names(Data)[1], names(Data)[2])
 
 
 # reshuffle dataset; data set may be ordered by target. 
@@ -61,8 +56,8 @@ standFun = function(x){
   return(out)
 }
 
-Data$x1 = standFun(Data$x1)
-Data$x2 = standFun(Data$x2)
+Data[[features[1]]] = standFun(Data[[features[1]]])
+Data[[features[2]]] = standFun(Data[[features[2]]])
 
 
 
@@ -79,7 +74,7 @@ n = nrow(Data)
 #################
 
 # The initial weights, initialized to 0 (= completely ignorant)
-w = rep(0, 2 + 1)
+w = rep(0, length(features) + 1)
 
 
 
@@ -93,10 +88,10 @@ w = rep(0, 2 + 1)
 
 for (i in 1:n){
   
-  xi = as.numeric(D[i,1:2])  
+  xi = as.numeric(D[features][i, ])  
   # The x data from obs i, note that this is a vector with two elements
   
-  yi = D$y[i]                      
+  yi = D$Label[i]                      
   # The y value from obs i
   
   index = w[1] + w[2]*xi[1] + w[3]*xi[2]
@@ -138,23 +133,11 @@ for (i in 1:n){
 # Now we calculate predictions for all i based on the LAST ITERATION
 # for the weights
 
-D$lastIndex = w[1] + w[2]*D$x1 + w[3]*D$x2
+D$lastIndex = w[1] + w[2]*D[[features[1]]] + w[3]*D[[features[2]]]
 
 D$lastPrediction = ifelse(D$lastIndex >=decCrit, 1, -1)
 
-D$lastError  = D$y - D$lastPrediction
-
-
-# Number of misclassified cases (in % of total sample)
-misclas = round(sum(D$lastError!=0)/nrow(D)*100, digits = 1)
-
-# False positives (in % of negatives)
-x = ifelse(D$lastPrediction == 1 & D$y == -1, 1, 0)
-falPos = round(sum(x)/length(D$y[D$y == -1])*100, digits = 1)
-
-# False negatives (in % of positives)
-x = ifelse(D$lastPrediction == -1 & D$y == 1, 1, 0)
-falNeg = round(sum(x)/length(D$y[D$y == 1])*100, digits = 1)
+D$lastError  = D$Label - D$lastPrediction
 
 
 
@@ -165,14 +148,11 @@ falNeg = round(sum(x)/length(D$y[D$y == 1])*100, digits = 1)
 
 posCol = "red"     # color for data points with label +1 
 negCol = "blue"    # color for data points with label -1 in data
-posColbg = "#f79999"  # Background color for area predicted +1
-negColbg = "#9ed9f7"  # Background color for area predicted -1
-
 
 # First an empty plot as "canvas", to add the rest
-plot(Data$x1, Data$x2, type = "n",
-     xlab = "Attribute 1", ylab = "Attribute 2", cex = 1,
-     main = paste0("Linear Seperation"),
+plot(Data[[features[1]]], Data[[features[2]]], type = "n",
+     xlab = "Sepal Length", ylab = "Sepal Width", cex = 1,
+     main = paste0("Multi-class Prediction"),
      cex.main = 1.1)
 
 
@@ -181,46 +161,13 @@ plot(Data$x1, Data$x2, type = "n",
 
 xlims = par("usr")[1:2]; ylims = par("usr")[3:4]
 
-# A grid of (x,y) combinations that is used for coloring prediction areas
-x = seq(xlims[1], xlims[2], 0.01)
-y = -w[1]/w[3] - w[2]/w[3]*x
-
-xgrid =  seq(xlims[1], xlims[2], (xlims[2]-xlims[1])/300)
-ygrid =  seq(ylims[1], ylims[2], (ylims[2]-ylims[1])/300)
-nx = length(xgrid); ny = length(ygrid)
-
-xgrid = rep(xgrid, times = ny)
-ygrid = rep(ygrid, each = nx)
-toPaint = data.frame(xgrid = xgrid, ygrid = ygrid)
-# toPaint is the data frame that is used for coloring the prediction areas
-
-
-
-# Put background colors for prediction areas onto canvas
-
-dataptsize = 0.7
-bgptsize = 0.5
-
-toPaint$index = w[1] + w[2]*xgrid + w[3]*ygrid
-toPaint$prediction = ifelse(toPaint$index >=decCrit, 1, -1 )
-
-
-# First, add packground coloring for areas that are predicted to be "positive"
-points(toPaint$xgrid[toPaint$prediction == 1], toPaint$ygrid[toPaint$prediction == 1],
-       pch=c(16), col=posColbg, cex =bgptsize)
-
-# Add packground coloring for areas that are predicted to be "negative"
-points(toPaint$xgrid[toPaint$prediction == -1], toPaint$ygrid[toPaint$prediction == -1],
-       pch=c(16), col=negColbg, cex =bgptsize)
-
 # The "positive" data points
-points(Data$x1[Data$y == 1], Data$x2[Data$y == 1], 
+points(Data[[features[1]]][Data$Label == 1], Data[[features[2]]][Data$Label == 1], 
        pch=16, col=posCol, cex = dataptsize)
 
 # The "negative" data points
-points(Data$x1[Data$y == -1], Data$x2[Data$y == -1], 
+points(Data[[features[1]]][Data$Label == -1], Data[[features[2]]][Data$Label == -1], 
        pch=16, col=negCol,  cex = dataptsize)
-
 
 
 
@@ -228,12 +175,4 @@ points(Data$x1[Data$y == -1], Data$x2[Data$y == -1],
 xx = seq(xlims[1], xlims[2], 0.01)
 yy = decCrit/w[3] - w[1]/w[3] - w[2]/w[3]*xx
 lines(xx,yy, lty = 2, col = "black", lwd = 2)
-
-
-mtext(line = -1.5, 
-      paste0(misclas, "\u0025 misspecified cases"), col = "white")
-mtext(line = -3, 
-      paste0(falPos,"\u0025 false positives -- ",
-             falNeg,"\u0025 false negatives"), 
-      col = "white")
 
