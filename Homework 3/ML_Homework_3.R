@@ -100,13 +100,13 @@ NumIt = 20 # Number of epochs
 batch = 32 # Batch size
 leng = nrow(Data)
 
-mini_batch = mbgd(NumIt, weights, batch, leng)
+mini_batch = mbgd(100, weights, 506, leng)
 
 
 ### 2. Plot a learning curve for your mini-batch gradient descent algorithm, where the learning performance
 ### is measured by the RSS and the experience is given by the number of epochs/iterations, from 1 to 20.
 
-plot(mini_batch$Iteration,mini_batch$RSS,type='b',xlab='Iteration',ylab='RSS')
+plot(mini_batch$Iteration,mini_batch$RSS,type='b',xlab='Iteration',ylab='RSS',main="Batch Size = 506")
 
 ### 3. Plot a learning curve for the full gradient descent algorithm, where the learning performance is measured
 ### by the RSS and the experience is given by the number of epochs/iterations, from 1 to 20.
@@ -146,6 +146,20 @@ t=mbgd(NumIt, weights, 32, leng)
 finish = Sys.time()
 run_time = finish - start
 print(paste0("Batch = 32 and epochs = 20, run time =", run_time))
+
+
+
+
+
+
+
+start = Sys.time()  
+t=mbgd(1000, weights, 32, leng)
+finish = Sys.time()
+run_time = finish - start
+print(paste0("Batch = 32 and epochs = 20, run time =", run_time))
+
+
 
 
 
