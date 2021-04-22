@@ -44,8 +44,11 @@ summary(glm.fit)
 ### Get a list of predictions. How do you interpret these as probabilities.
 ```{r}
 yhat = predict(glm.fit, type = "response")
+contrasts(Data.Train$diagnosis)
 ```
-The numbers we get are the probabilities of the cancer being malign. The higher the value is, the higher the probability of having a malign cancer.
+The numbers we get in "yhat" are the probabilities of the cancer being malign. The higher the value is, the higher the probability of having a malign cancer.
+
+Using the "contrasts" command we can automatically code a binary variable. In this case it is 1 for M and 0 for B.
 
 
 
@@ -115,7 +118,7 @@ Direction.2005 = Direction[!train]
 
 # Logistic model with only Lag1
 glm.fits = glm(Direction ~ Lag1, data = Smarket, family = binomial,subset = train)
-
+summary(glm.fits)
 # predict for the test data
 glm.probs = predict(glm.fits,Smarket.2005,type = "response")
 
@@ -124,7 +127,6 @@ glm.pred = rep("Down",252)
 glm.pred[glm.probs > .5] = "Up"
 ```
 
-\newpage
 
 ```{r}
 # Show the result
