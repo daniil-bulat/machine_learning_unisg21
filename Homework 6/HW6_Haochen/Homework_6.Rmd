@@ -44,8 +44,10 @@ summary(glm.fit)
 ### Get a list of predictions. How do you interpret these as probabilities.
 ```{r}
 yhat = predict(glm.fit, type = "response")
-contrasts(Data.Train$diagnosis)
 ```
+The numbers we get are the probabilities of the cancer being malign. The higher the value is, the higher the probability of having a malign cancer.
+
+
 
 ## Question 3
 ### Predict the actual class label (B or M).
