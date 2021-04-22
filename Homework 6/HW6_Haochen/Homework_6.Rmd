@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 mainDir = "Desktop/Uni/FS21/Machine Learning/ML_Git/Homework 6"
 #setwd(mainDir)
-load("HW6_Haochen/Data/wdbcData.RData")
+load("Data/wdbcData.RData")
 ```
 
 
@@ -61,17 +61,14 @@ result$error = ifelse(result$diagnosis != result$prediction,1,0)
 
 # Number of misclassified cases
 misclas = sum(result$error)
-cat("Number of misclassified cases:", misclas,"[",round((100/nrow(result))*misclas,2),"%]")
 
 # False positives 
 x = ifelse(result$prediction == "M" & result$diagnosis == "B", 1, 0)
 falPos = sum(x)
-cat("False positives :", falPos,"[",round((100/nrow(result))*falPos,2),"%]")
 
 # False negatives 
 x = ifelse(result$prediction == "B" & result$diagnosis == "M", 1, 0)
 falNeg = sum(x)
-cat("False negatives :", falNeg,"[",round((100/nrow(result))*falNeg,2),"%]")
 ```
 
 
@@ -113,25 +110,21 @@ attach(Smarket)
 train = (Year < 2005)
 Smarket.2005 = Smarket[!train,]
 Direction.2005 = Direction[!train]
-```
 
-\newpage
-
-```{r}
 # Logistic model with only Lag1
 glm.fits = glm(Direction ~ Lag1, data = Smarket, family = binomial,subset = train)
-summary(glm.fits)
+
 # predict for the test data
 glm.probs = predict(glm.fits,Smarket.2005,type = "response")
 
 # classify the probabilities to binary label
 glm.pred = rep("Down",252)
 glm.pred[glm.probs > .5] = "Up"
+```
 
-ups = ifelse(glm.pred == "Up",1,0)
-downs = ifelse(glm.pred == "Down",1,0)
-perc = 100/(sum(ups)+sum(downs))
+\newpage
 
+```{r}
 # Show the result
 table(glm.pred,Direction.2005)
 
