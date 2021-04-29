@@ -25,9 +25,6 @@ load("../Data/wdbcData.RData")
 # * Question 1 ------------------------------------------------------------
 # Split the data into traning and testing sets in the ratio 70%-30%
 
-# verify correct columns
-colnames(Data[5])  == "perimeter_mean"
-colnames(Data[10]) == "concaveP_mean"
 
 # Shuffle and Split Data (70-30)
 set.seed(123)
@@ -35,9 +32,11 @@ Data = Data[sample(nrow(Data)),]
 
 # Create data frame for data to be used
 df = data.frame(id = Data$id,
-                diagnosis = Data$diagnosis, 
-                perimeter_mean = Data$perimeter_mean, 
-                concaveP_mean = Data$concaveP_mean)
+                diagnosis = Data$diagnosis,  Data[, c(5, 10)]
+                
+                #perimeter_mean = Data$perimeter_mean, 
+                #concaveP_mean = Data$concaveP_mean
+                )
 ntrain = floor(nrow(df)*0.7)
 df.Train = df[1:ntrain,]
 df.Test = df[(ntrain+1):nrow(Data),]
@@ -122,60 +121,82 @@ errors = data.frame(KNN1 = err_F_1,
 
 
 
-# Exercise 2 --------------------------------------------------------------
-
+# Exercise 3 --------------------------------------------------------------
 
 # * Question 1 ------------------------------------------------------------
+# Write your own 2-NN regression algorithm.
 
-# Briefly summarize what we are predicting in dependance on which data in this example.
+# Prepare for data
+L.olympics=t(data.frame(c(1896,12),c(1900,11),c(1904,11),c(1906,11.2),c(1908,10.8),
+                        c(1912,10.8),c(1920,10.8),c(1924,10.6),c(1928,10.8),c(1932,10.3),
+                        c(1936,10.3),c(1948,10.3),c(1952,10.4),c(1956,10.5),c(1960,10.2),
+                        c(1964,10),c(1968,9.95),c(1972,10.14),c(1980,10.25),c(1984,9.99),
+                        c(1988,9.92),c(1992, 9.96),c(1996, 9.84),c(2000, 9.87),c(2004,9.85),
+                        c(2008,9.69),c(2012, 9.61),c(2016, 9.83)))
 
-# We are using data from ISLR called Smarket, which consistent information of percentage returns for the S&P 500 stock index over 1250 days from the beginning of 2001 until the end of 2005.
-# What we are predicting is the direction of the market (percentage returns of the S&P 500  index) changes on the specified date.
+colnames(L.olympics)=c("year","time")
+rownames(L.olympics)=1:nrow(L.olympics)
+data = L.olympics
 
+# Write the function
+my_2NN = function(x.train,x.test,y){
+  # initializing predictions
+  predictions = c()
+  # Loops to find position of test data and compute the predictions
+  for (i in c(1:length(x.test))){
+    for (j in c(1:length(x.train))){
+      # condition set to find the position of testing data
+      if ((x.test[i]>x.train[j]) & (x.test[i]<x.train[j+1])){
+        
+        # prediction is the average of neighbor years
+        # There are two cases:
+        # 1. two outcomes are identical (majority vote)
+        # 2. two outcomes are different (with same probability = 1/2)
+        pred = sum(y[j],y[j+1])/2
+        
+        # store the results
+        predictions[i] = pred
+      }
+    }
+    
+  }
+  
+  result = data.frame(year = x.test, predictions = predictions)
+
+  return(result)
+}
 
 # * Question 2 ------------------------------------------------------------
 
-# What is the outcome, with 2 or 6 features, respectively?
-# How does our prediction compare to predicting that the market goes up all the time.
+# Define training and testing dataset
+train <- L.olympics[-c(4, 10, 17, 24), ]
+test  <- L.olympics[c(4, 10, 17, 24), ]
 
-# With 6 features, the logistic regression correctly predicted the movement of the market 48% of the time.
+# subtract features and outcomes
+x.train = train[1:nrow(train),1]
+x.test = test[1:nrow(test),1]
+y = train[1:nrow(train),2]
 
-# With 2 features, the logistic regression correctly predicted the movement of the market 56% of the time.
+# predict use own function
+pred_2NN = my_2NN(x.train,x.test,y)
 
-# In 2005, the market goes up in 141 days of 252 trading days, around 56% of the time. If we predicting the market goes up all the time, we would predict correctly 56% of the time. The logistic regression predicts the increase of the market 31% of the time in 2005 when the model uses 6 features, and 72% of the time when the model uses 2 features, respectively. So the model with 6 features performs worse than predicting the market goes up all the time, whereas the model with 2 features performs better than the other two.
+# compute the test-RSS
+errors = test[1:nrow(test),2] - pred_2NN[1:nrow(test),2]
+RSS = sum(errors**2)
+
+# result
+
+# predictions for testing data
+print(pred_2NN)
+
+# Test RSS
+print(RSS)
 
 
-# * Question 3 ------------------------------------------------------------
 
-# Run your own logistic regression with only Lag1 as input variable.
 
-# prepare data
-library(ISLR)
-attach(Smarket)
 
-# split data into train (before 2004) and test (2005) data
-train = (Year < 2005)
-Smarket.2005 = Smarket[!train,]
-Direction.2005 = Direction[!train]
 
-# Logistic model with only Lag1
-glm.fits = glm(Direction ~ Lag1, data = Smarket, family = binomial,subset = train)
 
-# predict for the test data
-glm.probs = predict(glm.fits,Smarket.2005,type = "response")
 
-# classify the probabilities to binary label
-glm.pred = rep("Down",252)
-glm.pred[glm.probs > .5] = "Up"
 
-# Show the result
-table(glm.pred,Direction.2005)
-
-# compute the accuracy rate
-mean(glm.pred == Direction.2005)
-
-# accuracy rate when predicting an increase
-116/(116+91)
-
-# accuracy rate when predicting a decrease
-20/(20+25)
