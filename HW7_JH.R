@@ -52,6 +52,15 @@ knn_pred_true_10 <- knn(data.train[, c(2:3)], data.test[, c(2:3)],
 knn_pred_true_25 <- knn(data.train[, c(2:3)], data.test[, c(2:3)], 
                        cl = data[(1:ntrain), 1], k = 25, prob = TRUE)
 
+# We have a train data set on which we train the KNN algorithm. This means that the
+# algorithm learns the location of every training data point and its type. Then the 
+# algorithm takes the location of every single test data points, looks at the type 
+# of it's k (i.e. 1, 10 or 25) nearest neighbors and predicts the class of the test 
+# data point according to a majority vote. The probability which is in that case 
+# displayed for the KNN algorithm shows us the percentage (or how close) the majority 
+# vote was. If our predicted class was M and the probability 0.75, this means that
+# 75% of the k neighbors of that point "voted" for the M-class.
+
 # KNN with prob = FALSE, we do NOT see the percentage of the votes for the winning class
 knn_pred_1  <- knn(data.train[, c(2:3)], data.test[, c(2:3)], cl = data[(1:ntrain), 1],
                   k = 1, prob = FALSE)
@@ -60,7 +69,7 @@ knn_pred_10 <- knn(data.train[, c(2:3)], data.test[, c(2:3)], cl = data[(1:ntrai
 knn_pred_25 <- knn(data.train[, c(2:3)], data.test[, c(2:3)], cl = data[(1:ntrain), 1],
                   k = 25, prob = FALSE)
 
-# show errors and error rate
+# show test errors and test error rate
 err_table_1     <- table(knn_pred_1, data[ntest, 1])
 err_rate_knn_1  <- round(((err_table_1[1, 2] + err_table_1[2, 1]) / length(knn_pred_1)) * 100, 2)
 err_table_10    <- table(knn_pred_10, data[ntest, 1])
@@ -85,6 +94,10 @@ err_rate_log <- (round(misclas/nrow(data.test), 3))*100
 # compare the error rates
 errors <- data.frame(KNN1 = err_rate_knn_1, KNN10 = err_rate_knn_10, 
                      KNN25 = err_rate_knn_25, LR = err_rate_log, row.names = "Error Rate")
+print(errors)
+
+# We see that the logistic regression performed best, but only sligthly better than
+# KNN with k = 10.
 
 
 
