@@ -92,6 +92,12 @@ err_F_1 = round(sum(knn_F_1 != as.matrix(df.Test[yvars]))/length(knn_F_1)* 100,2
 err_F_10 = round(sum(knn_F_10 != as.matrix(df.Test[yvars]))/length(knn_F_10)* 100,2)
 err_F_25 = round(sum(knn_F_25 != as.matrix(df.Test[yvars]))/length(knn_F_25)* 100,2)
 
+K = c(1,10,25)
+errors = c(err_F_1,err_F_10,err_F_25)
+
+for (i in 1:3){
+  cat("The error rate of K-NN algorithm when K = ", K[i], "is", errors[i], "\n")
+}
 
 # * Question 4 ------------------------------------------------------------
 
