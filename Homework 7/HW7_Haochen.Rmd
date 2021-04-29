@@ -1,7 +1,7 @@
 ---
 title: |
   | Machine Learning, Spring 2021
-  | Homework 6
+  | Homework 7
 author: "Daniil Bulat, Jonas Josef Huwyler, Haochen Li,Giovanni Magagnin"
 date: "4/29/2021"
 output:
