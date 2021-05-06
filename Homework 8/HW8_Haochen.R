@@ -88,11 +88,13 @@ Data.Ex2 = t(data.frame(c(-1,2),c(1,1),c(0.5,3),c(1,4),c(3,2),c(3.5,1),c(3.5,4),
 Data.Ex2 = data.frame(Data.Ex2)
 colnames(Data.Ex2) = c("x","y")
 rownames(Data.Ex2) = 1:nrow(Data.Ex2)
+Data.Ex2["class"] = c(-1,-1,-1,-1,1,1,1,1)
+Data.Ex2$class = as.factor(Data.Ex2$class)
 
 # * Question 1 ------------------------------------------------------------ 
 
 # Plot the hyperplane and the margin.
-fig1 = ggplot(Data.Ex2,aes(x,y)) + 
+fig1 = ggplot(Data.Ex2,aes(x,y, color = class)) + 
   geom_point() +
   geom_vline(xintercept = 2, col = "red") +
   geom_vline(xintercept = 1, col = "blue", lty = 2) +
