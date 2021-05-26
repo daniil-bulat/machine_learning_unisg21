@@ -35,7 +35,7 @@ library(quanteda)
 train_corpus = corpus(data$Text)
 # apply tfidf
 dfm_tfidf =  dfm(train_corpus,
-                 remove=stopwords("german"),
+                 remove=stopwords("english"),
                  remove_url=TRUE,
                  remove_punct=TRUE,
                  split_hyphens=TRUE,
@@ -92,7 +92,8 @@ dfm_tfidf =  dfm(train_corpus,
 # testResponseAFD <- as.factor(dataTrain$afd_label[-trainIndex])
 # 
 # train control = none
-trctrl <- trainControl(method = "none")
+library(caret)
+trctrl = trainControl(method = "none")
 ############## Train & Test Models ############## 
 ## ## ##  SVM Immi ## ## ## 
 # svm Immi model
@@ -163,6 +164,8 @@ trctrl <- trainControl(method = "none")
 ############## Predict Values ############## 
 ## ## ##  Prepare training Set ## ## ## 
 # transform and refactor
+dataTrain = data
+
 train_df = dfm_tfidf  %>%
   as.matrix() %>%
   as.data.frame()

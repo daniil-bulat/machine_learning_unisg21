@@ -3,31 +3,44 @@
 
 setwd("~/Desktop/Uni/FS21/Machine Learning/machine_learning_unisg21/Final Paper")
 
-# Data from Kaggle
-data = read.csv("Data/reddit_wsb.csv")
-colnames(data) = c("title", "score", "id", "url", "comms_num", "created", "body", "timestamp")
-data = data[,-6]
+# Data
+data = read.csv("Data/wsb_reddit_data.csv")
 
-# Data prior to 28.02.2121 - Reddit API
-data_1 = read.csv("Data/reddit_wsb1.csv")
-colnames(data_1) = c("id", "title", "body", "score", "timestamp", "comms_num", "url")
-data_1 = data_1[,c(2,4,1,7,6,3,5)]
+# Data Cleaning
+data$body = recode(data$body, "[removed]"="", .default = data$body)
+data$body = recode(data$body, "[deleted]"="", .default = data$body)
+data$body = recode(data$body, "nan"="", .default = data$body)
 
-# Complete Data
-data_c = rbind(data_1,data)
-data_c$timestamp = as.POSIXct(strptime(data_c$timestamp, "%Y-%m-%d"))
-write.csv(data_c, file="Data/wsb_reddit_data.csv")
+# mutate Text column combining title and body
+data = data %>%
+  mutate(Text = paste(title, body, sep = " "))
+
+# remove unnecessary columns
+data = data[,-(6)]
+data = data[,-(3:4)]
+data = data[,-(1)]
+data = data[,c(4,1,2,3)]
+
+
+
+# How to filter for a stock
+library(stringr)
+library(dplyr)
+
+gme_data = data %>%
+  select(Text, score, comms_num, timestamp) %>%   
+  filter(str_detect(Text, "GME|game stop|gme|Game Stop"))
+
+
 
 # GME closing values
 gme = read.csv("Data/GME_jan_may_21.csv")
 gme = gme[,-(6:7)]
 gme = gme[,-(2:4)]
 
-
 # percentage change for gme stock
 library(tidyverse)
 gme = gme %>%
   mutate(pct_change = (Close/lag(Close) - 1) * 100)
-
 
 
