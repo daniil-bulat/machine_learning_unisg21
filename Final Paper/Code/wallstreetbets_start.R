@@ -1,25 +1,29 @@
 # Machine Learning Final Project
 # Reddit — WallStreetBets Sentiment Analysis / Machine Learning
-
+library(dplyr)
 setwd("~/Desktop/Uni/FS21/Machine Learning/machine_learning_unisg21/Final Paper")
 
 # Data
-data = read.csv("Data/wsb_reddit_data.csv")
+data = read.csv("Data/wsb_reddit_complete_clean.csv")
 
+#######
 # Data Cleaning
-data$body = recode(data$body, "[removed]"="", .default = data$body)
-data$body = recode(data$body, "[deleted]"="", .default = data$body)
-data$body = recode(data$body, "nan"="", .default = data$body)
-
-# mutate Text column combining title and body
-data = data %>%
-  mutate(Text = paste(title, body, sep = " "))
-
-# remove unnecessary columns
-data = data[,-(7)]
-data = data[,-(4:5)]
-data = data[,-(1:2)]
-data = data[,c(4,1,2,3)]
+#data$body = recode(data$body, "[removed]"="", .default = data$body)
+#data$body = recode(data$body, "[deleted]"="", .default = data$body)
+#data$body = recode(data$body, "nan"="", .default = data$body)
+#
+## mutate Text column combining title and body
+#data = data %>%
+#  mutate(Text = paste(title, body, sep = " "))
+#
+## remove unnecessary columns
+#data = data[,-(7)]
+#data = data[,-(4:5)]
+#data = data[,-(1:2)]
+#data = data[,c(4,1,2,3)]
+#
+#write.csv(data, file="Data/wsb_reddit_complete_clean.csv")
+#######
 
 ############################## Sentiment Analysis ##############################
 # Quanteda
