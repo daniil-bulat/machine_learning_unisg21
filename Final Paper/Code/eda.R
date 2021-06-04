@@ -53,7 +53,7 @@ ggplot(data=data, aes(num_comments)) +
 
 #################################### Score Sum #################################
 ggplot(data=data, aes(score_sum)) + 
-  geom_histogram(breaks=seq(-1, 1, by=0.01), 
+  geom_histogram(#breaks=seq(-1, 1, by=0.01), 
                  col="green", 
                  fill="blue", 
                  alpha = .5) + 
@@ -66,26 +66,33 @@ data$texlen = nchar(data$text)
 
 # Text Length: 0 - 200
 ggplot(data=data, aes(texlen)) + 
-  geom_histogram(breaks=seq(0, 200, by=1), 
-                 col="green", 
+  geom_histogram(col="green", 
                  fill="blue", 
                  alpha = .5) + 
-  labs(title="Histogram of Text Length", x="Text Length", y="Count") + 
-  xlim(c(0,200)) + 
-  ylim(c(0,1000))
+  labs(title="Histogram of Text Length", x="Text Length", y="Count") +
+  xlim(c(0,200))
 
 
 # Text Length: 0 - max
 ggplot(data=data, aes(texlen)) + 
-  geom_histogram(breaks=seq(0, max(data$texlen), by=1), 
-                 col="green", 
+  geom_histogram(col="green", 
                  fill="blue", 
                  alpha = .5) + 
   labs(title="Histogram of Text Length", x="Text Length", y="Count") + 
-  xlim(c(0,max(data$texlen))) + 
+  xlim(c(0,41000)) + 
   ylim(c(0,1000))
 
 
+################################################################################
+data_avg = data_avg[,-7]
 
+# Split the age by "-", resulting in a list
+data_avg$scores = gsub("\\[|\\]", "", data_avg$scores)
+data_split = strsplit(data_avg$scores, split = ",", fixed = TRUE)
+
+
+# Turn numeric and take middle point of group, sapply turns back into vector
+data_avg$scores_avg = sapply(data_split, function(x) mean(as.numeric(x)))
+data_avg$scores_avg = round(data_avg$scores_avg,3)
 
 

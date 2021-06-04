@@ -12,8 +12,20 @@ setwd("~/Desktop/Uni/FS21/Machine Learning/machine_learning_unisg21/Final Paper"
 # Data
 data = read.csv("Data/sentiment/reddit_sentiment.csv")
 data = data[,2:8]
-names(data) = c("text","score","num_comments","timestamp","sentences","scores","score_sum")
 
+#######
+# data_avg = data_avg[,-7]
+# # Split data by ",", resulting in a list
+# data_avg$scores = gsub("\\[|\\]", "", data_avg$scores)
+# data_split = strsplit(data_avg$scores, split = ",", fixed = TRUE)
+# 
+# 
+# # Turn numeric and take middle point of group, sapply turns back into vector
+# data_avg$scores_avg = sapply(data_split, function(x) mean(as.numeric(x)))
+# data_avg$scores_avg = round(data_avg$scores_avg,3)
+# 
+# write.csv(data_avg, file="Data/sentiment/reddit_sentiment.csv")
+#######
 
 #######
 # Data Cleaning
