@@ -76,26 +76,3 @@ un.topics.pa <- convert(reddit_dfm.un, "data.frame") %>%
   mutate(Topic = haven::as_factor(Topic))
 
 
-
-
-
-
-
-
-# How to filter for a stock
-gme_data = data %>%
-  select(Text, score, comms_num, timestamp) %>%   
-  filter(str_detect(Text, "GME|game stop|gme|Game Stop"))
-
-
-
-# GME closing values
-gme = read.csv("Data/GME_jan_may_21.csv")
-gme = gme[,-(6:7)]
-gme = gme[,-(2:4)]
-
-# percentage change for gme stock
-gme = gme %>%
-  mutate(pct_change = (Close/lag(Close) - 1) * 100)
-
-

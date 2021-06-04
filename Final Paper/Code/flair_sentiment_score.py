@@ -5,6 +5,7 @@ from segtok.segmenter import split_single
 import pandas as pd
 import re
 import os
+import statistics as stat
 
 
 os.chdir("Desktop/Uni/FS21/Machine Learning/machine_learning_unisg21/Final Paper")
@@ -57,6 +58,12 @@ def get_scores(sentences):
     
     return results
 
+def get_avg(scores):
+    
+    result = round(stat.mean(scores), 3)
+    return result
+
+
 def get_sum(scores):
     
     result = round(sum(scores), 3)
@@ -80,6 +87,12 @@ df.to_csv(index="False")
 
 df.to_csv('/Users/danielbulat/Desktop/Uni/FS21/Machine Learning/machine_learning_unisg21/Final Paper/Data/reddit_sentiment.csv',
           index = False)
+
+
+
+
+
+
 
 
 
