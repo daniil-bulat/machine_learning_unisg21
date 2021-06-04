@@ -83,16 +83,4 @@ ggplot(data=data, aes(texlen)) +
   ylim(c(0,1000))
 
 
-################################################################################
-data_avg = data_avg[,-7]
-
-# Split the age by "-", resulting in a list
-data_avg$scores = gsub("\\[|\\]", "", data_avg$scores)
-data_split = strsplit(data_avg$scores, split = ",", fixed = TRUE)
-
-
-# Turn numeric and take middle point of group, sapply turns back into vector
-data_avg$scores_avg = sapply(data_split, function(x) mean(as.numeric(x)))
-data_avg$scores_avg = round(data_avg$scores_avg,3)
-
 
