@@ -48,7 +48,7 @@ data = data[,2:8]
 
 # How to filter for a stock
 gme_data = data %>%
-  select(text, score, num_comments, timestamp, sentences,scores,score_sum) %>%   
+  select(text, score, num_comments, timestamp, sentences, scores, scores_avg) %>%   
   filter(str_detect(text, "GME|game stop|gme|Game Stop"))
 
 
