@@ -11,81 +11,15 @@ library(class)
 setwd("C:/Labs/Machine Learning/Final Paper/Code")
 
 
-# Data Import -------------------------------------------------------------
 
-
-# Sentiment Data
-data = read.csv("C:/Labs/Machine Learning/Final Paper/Data/sentiment/reddit_sentiment.csv")
-data = data[,2:8]
-data$texlen = nchar(data$text)
-
-####### Stock Data
-
-# How to filter for a stock
-gme_data = data %>%
-  select(text, score, num_comments, timestamp, sentences, scores, scores_avg,texlen) %>%   
-  filter(str_detect(text, "GME|game stop|gme|Game Stop"))
-
-# GME closing values
-gme = read.csv("C:/Labs/Machine Learning/Final Paper/Data/stocks/GME_jan_may_21.csv")
-gme = gme[,-(6:7)]
-gme = gme[,-(2:4)]
-
-
-
-# Data Cleaning -----------------------------------------------------------
-
-# Simpre return: percentage change for gme stock
-gme = gme %>%
-  mutate(pct_change = (Close/lag(Close) - 1) * 100)
-
-gme['direction'] = sign(gme['pct_change'])
-
-gme$Date = as.Date(gme$Date)
-
-# Rank Sentiment Data
-
-data$timestamp = as.Date(data$timestamp)
-class(data$timestamp)
-
-df = data[,c(3,4,7,8)]
-
-data.frame(table(df$timestamp))
-
-df = arrange(df,timestamp, -num_comments)
-
-df <- df %>% 
-  group_by(timestamp) %>% 
-  mutate(rank = row_number())
-
-df1 <- df %>% 
-  select(timestamp,rank, scores_avg) %>% 
-  filter(rank <= 20)
-
-df1['variable'] = paste0('Top', as.character(df1$rank))
-
-df2 <- select(df1,timestamp,variable, scores_avg) %>%
-  dcast(timestamp ~ variable, value.var = "scores_avg") %>%
-  select(timestamp,Top1,Top2,Top3,Top4,Top5,Top6,Top7,Top8,Top9,Top10,
-         Top11,Top12,Top13,Top14,Top15,Top16,Top17,Top18,Top19,Top20)
-
-
-ml_join_data <- left_join(gme, df2,by = c("Date" = "timestamp")) %>%
-  arrange(Date)
-
-head(ml_join_data)
-
-gme_final_data <- na.omit(ml_join_data)
-
-head(gme_final_data)
-
-
-
-# Logistic Regression -----------------------------------------------------
+# Import Data -------------------------------------------------------------
 
 # load Data
-Data = gme_final_data
+Data = read.csv("C:/Labs/Machine Learning/Final Paper/Data/analysis data/gme.csv")
 Data$direction[Data$direction == -1] = 0
+Data$Date = as.Date(Data$Date)
+
+# Logistic Regression -----------------------------------------------------
 
 # Shuffle and Split Data (70-30)
 set.seed(123)
