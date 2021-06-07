@@ -90,7 +90,25 @@ df.to_csv('/Users/danielbulat/Desktop/Uni/FS21/Machine Learning/machine_learning
 
 
 
+##############################################################################
+# Theory
 
+from flair.data import Sentence
+from flair.models import SequenceTagger
+
+# load model
+tagger = SequenceTagger.load("ner")
+
+sentence = Sentence("George Washington was born.")
+
+# predict NER tags
+tagger.predict(sentence)
+
+#print sentence with predicted tags
+print(sentence.to_tagged_string())
+
+for entity in sentence.get_spans("ner"):
+    print(entity)
 
 
 
