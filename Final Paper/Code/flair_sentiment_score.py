@@ -110,6 +110,18 @@ print(sentence.to_tagged_string())
 for entity in sentence.get_spans("ner"):
     print(entity)
 
+##############################################################################
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('Data/reddit_raw/plot_data.csv')
+
+fig,ax = plt.subplots(nrows=1, ncols=3, figsize=(20,5))
+ax[0].set_yscale('log')
+ax[1].set_yscale('log')
+ax[2].set_yscale('log')
+df.hist(column=['score'], bins = 25, ax = ax[0])
+df.hist(column=['num_comments'], bins = 25, ax = ax[1])
+df.hist(column=['texlen'], bins = 25, ax = ax[2])
 
 
 

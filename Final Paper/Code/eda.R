@@ -9,46 +9,22 @@ data = data[,2:8]
 plot_data = data
 
 #################################### Scores ####################################
-# Scores: 0 - 200
-ggplot(data=plot_data, aes(score)) + 
-  geom_histogram(col="red", 
-                 fill="green", 
-                 alpha = .5) + 
-  labs(title="Histogram of Scores, 0 - 200", x="Score", y="Count") + 
-  xlim(c(0,200)) + 
-  ylim(c(0,2000))
-
-# Scores: 0 - max
 ggplot(data=plot_data, aes(score)) + 
   geom_histogram(col="red", 
                  fill="green", 
                  alpha = .5) + 
   labs(title="Histogram of Scores", x="Score", y="Count") + 
-  xlim(c(0,350000)) + 
-  ylim(c(0,1500))
+  scale_y_continuous(trans='log10')
 
 #################################### Comments ##################################
-# Comments: 0 - 200
 ggplot(data=plot_data, aes(num_comments)) + 
-  geom_histogram(breaks=seq(0, 2000, by=1), 
-                 col="blue", 
+  geom_histogram(col="red", 
                  fill="green", 
                  alpha = .5) + 
-  labs(title="Histogram of Comments, 0 - 200", x="Comments", y="Count") + 
-  xlim(c(0,200)) + 
-  ylim(c(0,2000))
+  labs(title="Histogram of Comments", x="Comments", y="Count") + 
+  scale_y_continuous(trans='log10')
 
-# Comments: 0 - 10000
-ggplot(data=plot_data, aes(num_comments)) + 
-  geom_histogram(#breaks=seq(0, 2000, by=1), 
-    col="blue", 
-    fill="green", 
-    alpha = .5) + 
-  labs(title="Histogram of Comments, 0 - 10'000", x="Comments", y="Count") + 
-  xlim(c(0,10000)) + 
-  ylim(c(0,2000))
-
-#################################### Score Mean #################################
+#################################### Score Mean ################################
 ggplot(data=plot_data, aes(scores_avg)) + 
   geom_histogram(col="green", 
                  fill="blue", 
@@ -58,40 +34,22 @@ ggplot(data=plot_data, aes(scores_avg)) +
 #################################### Text Length ###############################
 plot_data$texlen = nchar(plot_data$text)
 
-# Text Length: 0 - 200
 ggplot(data=plot_data, aes(texlen)) + 
   geom_histogram(col="green", 
                  fill="blue", 
                  alpha = .5) + 
-  labs(title="Histogram of Text Length", x="Text Length", y="Count") +
-  xlim(c(0,200))
-
-
-# Text Length: 0 - max
-ggplot(data=plot_data, aes(texlen)) + 
-  geom_histogram(breaks=seq(0, 41000, by=10),
-                 col="green", 
-                 fill="blue", 
-                 alpha = .5) + 
   labs(title="Histogram of Text Length", x="Text Length", y="Count") + 
-  xlim(c(0,41000)) + 
-  ylim(c(0,1000))
+  scale_y_continuous(trans='log10')
 
 ########################### Day / Sentiment ####################################
 weekdays = c("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag","Samstag", "Sonntag")
 plot_data$day = weekdays(as.Date(plot_data$timestamp))
 mean(plot_data$scores_avg)
 
-# Boxplot
-p = ggplot(data = plot_data, aes(x=day, y=scores_avg, fill=day)) + 
-  geom_boxplot() + 
-  ylim(c(-1,1))
-p + facet_wrap( ~ day, scales="free")
-
 # Boxplot with correct order
 plot_data$day = factor(plot_data$day , levels=weekdays)
 
-boxplot(plot_data$scores_avg ~ plot_data$day , col=rgb(0.2,0.8,0.6,0.8,1) , ylab="mean sent score" , 
+boxplot(plot_data$scores_avg ~ plot_data$day , col=rgb(0.2,0.8,0.6,0.8,1) , ylab="Mean Sentiment Score" , 
         xlab="Weekdays")
 
 ################################################################################
@@ -123,9 +81,9 @@ day_score$day = factor(day_score$day,levels = weekdays)
 ggplot() + 
   geom_line(data = day_score, aes(x = day, y = pos, group=1), color = rgb(0.2,0.8,0.6,0.8,1)) +
   geom_line(data = day_score, aes(x = day, y = neg, group=1), color = rgb(1,0.3,0.5,0.6,1)) +
+  geom_point() + 
   xlab('') +
   ylab('Sentiment')
-
 
 
 
