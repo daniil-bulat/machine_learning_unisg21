@@ -47,11 +47,44 @@ data$texlen = nchar(data$text)
 #write.csv(data, file="Data/wsb_reddit_complete_clean.csv")
 #######
 
-# How to filter for a stock
+############################## Filter for Stock ################################
 gme_data = data %>%
   select(text, score, num_comments, timestamp, sentences, scores, scores_avg,texlen) %>%   
   filter(str_detect(text, "GME|game stop|gme|Game Stop"))
 
+tsla_data = data %>%
+  select(text, score, num_comments, timestamp, sentences, scores, scores_avg,texlen) %>%   
+  filter(str_detect(text, "TSLA|Tesla|tesla|tsla|musk|elon"))
+
+aapl_data = data %>%
+  select(text, score, num_comments, timestamp, sentences, scores, scores_avg,texlen) %>%   
+  filter(str_detect(text, "AAPL|Apple|apple|mac"))
+
+amc_data = data %>%
+  select(text, score, num_comments, timestamp, sentences, scores, scores_avg,texlen) %>%   
+  filter(str_detect(text, "AMC|amc|Theaters|Entertainment"))
+
+bb_data = data %>%
+  select(text, score, num_comments, timestamp, sentences, scores, scores_avg,texlen) %>%   
+  filter(str_detect(text, "BB|bb|Blackberry|BlackBerry|black berry"))
+
+clne_data = data %>%
+  select(text, score, num_comments, timestamp, sentences, scores, scores_avg,texlen) %>%   
+  filter(str_detect(text, "CLNE|clne|Clean Energy Fuels"))
+
+clov_data = data %>%
+  select(text, score, num_comments, timestamp, sentences, scores, scores_avg,texlen) %>%   
+  filter(str_detect(text, "CLOV|clov|Clover Health Investments"))
+
+tlry_data = data %>%
+  select(text, score, num_comments, timestamp, sentences, scores, scores_avg,texlen) %>%   
+  filter(str_detect(text, "TLRY|tlry|Tilary"))
+
+ocgn_data = data %>%
+  select(text, score, num_comments, timestamp, sentences, scores, scores_avg,texlen) %>%   
+  filter(str_detect(text, "OCGN|ocgn|Ocugen"))
+
+############################## Load Stock Prices ###############################
 # GME closing values
 gme = read.csv("Data/stocks/GME_jan_may_21.csv")
 gme = gme[,-(6:7)]
@@ -60,6 +93,15 @@ gme = gme[,-(2:4)]
 # percentage change for gme stock
 gme = gme %>%
   mutate(pct_change = (Close/lag(Close) - 1) * 100)
+
+tsla = read.csv("Data/stock/.csv")
+aapl = read.csv("Data/stock/.csv")
+amc = read.csv("Data/stock/.csv")
+bb = read.csv("Data/stock/.csv")
+clne = read.csv("Data/stock/.csv")
+clov = read.csv("Data/stock/.csv")
+tlry = read.csv("Data/stock/.csv")
+ocgn = read.csv("Data/stock/.csv")
 
 ############################ Machine Learning ##################################
 # remove unnecesary rows
