@@ -1,5 +1,9 @@
 # Machine Learning Final Project
 # Reddit and WallStreetBets Sentiment Analysis / Machine Learning
+
+rm(list = ls())
+
+
 library(dplyr)
 library(quanteda)
 library(readtext)
@@ -94,14 +98,16 @@ data_clean <- function(stock_data,sentiment_data){
     group_by(timestamp) %>% 
     mutate(rank = row_number()) %>% 
     select(timestamp,rank, scores_avg) %>% 
-    filter(rank <= 10)
+    filter(rank <= 5)
   # create variable names for next step
   df2['variable'] = paste0('Top', as.character(df2$rank))
   # transform the long panel data in to wide panel data 
   wide <- select(df2,timestamp,variable, scores_avg) %>%
     dcast(timestamp ~ variable, value.var = "scores_avg")  %>%
-    select(one_of(c("timestamp","Top1","Top2","Top3","Top4","Top5",
-                    "Top6","Top7","Top8","Top9","Top10")))
+    select(one_of(c("timestamp","Top1","Top2"
+                    ,"Top3","Top4","Top5"
+                    ,"Top6","Top7","Top8","Top9","Top10"
+                    )))
   # join the sentiment data with stock data, order by date
   ml_join_data <- left_join(df, wide,by = c("Date" = "timestamp")) %>%
     arrange(Date)
