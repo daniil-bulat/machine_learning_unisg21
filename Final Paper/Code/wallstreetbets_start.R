@@ -190,12 +190,13 @@ abline(gme_model)
 
 
 
-
-# Random Forrest
-
-
-
+data_table = data[,-8]
+data_table = data_table[,-5]
+data_table = data_table[,c(4,2,3,1,5,6)]
 
 
-
+(dd = data.frame(x = 1:8, f = gl(2,4), ch = I(letters[1:8])))
+# print() with defaults
+print(dd, quote = TRUE, row.names = FALSE, max = 3)
+# suppresses row.names and quotes all entries
 
