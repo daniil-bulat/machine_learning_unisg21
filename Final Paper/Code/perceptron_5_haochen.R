@@ -35,7 +35,7 @@ standFun = function(x){
   return(out)
 }
 
-features = names(Data)[2:3]
+features = names(Data)[2:6]
 
 # Keep only the columns in the data frame that we need for the learning task
 keepList = c(features, "direction")
@@ -85,7 +85,7 @@ for (i in 1:n){
   yi = D$direction[i]                      
   # The y value from obs i
   
-  index = w[1] + w[2]*xi[1] + w[3]*xi[2] # + w[4]*xi[3] + w[5]*xi[4]+ w[6]*xi[5]   
+  index = w[1] + w[2]*xi[1] + w[3]*xi[2] + w[4]*xi[3] + w[5]*xi[4]+ w[6]*xi[5]
   # The index, dont'get confused about the weird indexing, R has no index 0.
   
   # Prediction, as a function of the index value
@@ -102,9 +102,9 @@ for (i in 1:n){
   D$w_Top1_Length_i[i] = w[2]
   D$w_Top2_Length_i[i] = w[3]
   
-  # D$w_Top3_Length_i[i] = w[4]
-  # D$w_Top4_Length_i[i] = w[5]
-  # D$w_Top5_Length_i[i] = w[6]
+  D$w_Top3_Length_i[i] = w[4]
+  D$w_Top4_Length_i[i] = w[5]
+  D$w_Top5_Length_i[i] = w[6]
   
   
   
@@ -138,10 +138,10 @@ for (i in 1:n){
 
 Data.Train$lastIndex = w[1] + 
   w[2]*Data.Train[[features[1]]] + 
-  w[3]*Data.Train[[features[2]]] # +
-  #   w[4]*Data.Train[[features[3]]] +
-  #   w[5]*Data.Train[[features[4]]] +
-  #   w[6]*Data.Train[[features[5]]] 
+  w[3]*Data.Train[[features[2]]] + 
+  w[4]*Data.Train[[features[3]]] +
+  w[5]*Data.Train[[features[4]]] +
+  w[6]*Data.Train[[features[5]]]
 
 Data.Train$lastPrediction = ifelse(Data.Train$lastIndex >=decCrit, 1, -1)
 
@@ -175,10 +175,10 @@ MSETrain = round(mean(Data.Train$lastError^2),2)
 
 Data.Test$lastIndex = w[1] + 
   w[2]*Data.Test[[features[1]]] + 
-  w[3]*Data.Test[[features[2]]] # +
-  #   w[4]*Data.Test[[features[3]]] +
-  #   w[5]*Data.Test[[features[4]]] +
-  #   w[6]*Data.Test[[features[5]]] 
+  w[3]*Data.Test[[features[2]]] + 
+  w[4]*Data.Test[[features[3]]] +
+  w[5]*Data.Test[[features[4]]] +
+  w[6]*Data.Test[[features[5]]]
 
 
 Data.Test$lastPrediction = ifelse(Data.Test$lastIndex >=decCrit, 1, -1)
