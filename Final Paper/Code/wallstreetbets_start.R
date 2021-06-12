@@ -94,14 +94,49 @@ gme = gme[,-(2:4)]
 gme = gme %>%
   mutate(pct_change = (Close/lag(Close) - 1) * 100)
 
-tsla = read.csv("Data/stock/.csv")
-aapl = read.csv("Data/stock/.csv")
-amc = read.csv("Data/stock/.csv")
-bb = read.csv("Data/stock/.csv")
-clne = read.csv("Data/stock/.csv")
-clov = read.csv("Data/stock/.csv")
-tlry = read.csv("Data/stock/.csv")
-ocgn = read.csv("Data/stock/.csv")
+tsla = read.csv("Data/stocks/TSLA.csv")
+aapl = read.csv("Data/stocks/AAPL.csv")
+amc = read.csv("Data/stocks/AMC.csv")
+bb = read.csv("Data/stocks/BB.csv")
+clne = read.csv("Data/stocks/CLNE.csv")
+clov = read.csv("Data/stocks/CLOV.csv")
+tlry = read.csv("Data/stocks/TLRY.csv")
+ocgn = read.csv("Data/stocks/OCGN.csv")
+
+tsla = tsla[,-(6:7)]
+tsla = tsla[,-(2:4)]
+aapl = aapl[,-(6:7)]
+aapl = aapl[,-(2:4)]
+amc = amc[,-(6:7)]
+amc = amc[,-(2:4)]
+bb = bb[,-(6:7)]
+bb = bb[,-(2:4)]
+clne = clne[,-(6:7)]
+clne = clne[,-(2:4)]
+clov = clov[,-(6:7)]
+clov = clov[,-(2:4)]
+tlry = tlry[,-(6:7)]
+tlry = tlry[,-(2:4)]
+ocgn = ocgn[,-(6:7)]
+ocgn = ocgn[,-(2:4)]
+
+
+tsla = tsla %>%
+  mutate(pct_change = (Close/lag(Close) - 1) * 100)
+aapl = aapl %>%
+  mutate(pct_change = (Close/lag(Close) - 1) * 100)
+amc = amc %>%
+  mutate(pct_change = (Close/lag(Close) - 1) * 100)
+bb = bb %>%
+  mutate(pct_change = (Close/lag(Close) - 1) * 100)
+clne = clne %>%
+  mutate(pct_change = (Close/lag(Close) - 1) * 100)
+clov = clov %>%
+  mutate(pct_change = (Close/lag(Close) - 1) * 100)
+tlry = tlry %>%
+  mutate(pct_change = (Close/lag(Close) - 1) * 100)
+ocgn = ocgn %>%
+  mutate(pct_change = (Close/lag(Close) - 1) * 100)
 
 ############################ Machine Learning ##################################
 # remove unnecesary rows
@@ -155,12 +190,13 @@ abline(gme_model)
 
 
 
-
-# Random Forrest
-
-
-
+data_table = data[,-8]
+data_table = data_table[,-5]
+data_table = data_table[,c(4,2,3,1,5,6)]
 
 
-
+(dd = data.frame(x = 1:8, f = gl(2,4), ch = I(letters[1:8])))
+# print() with defaults
+print(dd, quote = TRUE, row.names = FALSE, max = 3)
+# suppresses row.names and quotes all entries
 
