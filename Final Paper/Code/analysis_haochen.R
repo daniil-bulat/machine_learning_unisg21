@@ -8,17 +8,23 @@ library(tidyverse)
 library(reshape2)
 library(class)
 
-setwd("C:/Labs/Machine Learning/Final Paper/Code")
 
 
+# Logistic Regression -----------------------------------------------------
 
-# Import Data -------------------------------------------------------------
+# set the workspace
+rm(list = ls())
+mainDir = "C:/Labs/Machine Learning/Final Paper/Code"
+setwd(mainDir)
 
-# load Data
-Data = read.csv("C:/Labs/Machine Learning/Final Paper/Data/analysis data/combined_data.csv")
-Data$direction[Data$direction == -1] = 0
+# The data (Make sure they are in the proper working directory)
+
+Data = read.csv("C:/Labs/Machine Learning/Final Paper/Data/analysis data/combined_data_5_features.csv")
+
 Data$Date = as.Date(Data$Date)
 Data = Data[,-(1:4)]
+
+
 
 # Standardize Features
 standFun = function(x){
@@ -26,14 +32,21 @@ standFun = function(x){
   return(out)
 }
 
-features = names(Data)[2:11]
+features = names(Data)[2:6]
 
-for (i in 1:10){
+# Keep only the columns in the data frame that we need for the learning task
+keepList = c(features, "direction")
+
+Data = Data[keepList]
+
+for (i in 1:length(features)){
   Data[[features[i]]] = standFun(Data[[features[i]]])
 }
 
-# Logistic Regression -----------------------------------------------------
+# Adjust dependent variable to suit for logistic regression
+Data$direction[Data$direction == -1] = 0
 
+# Split the data into training and test
 # Shuffle and Split Data (70-30)
 set.seed(123)
 Data = Data[sample(nrow(Data)),]
@@ -42,105 +55,74 @@ Data.Train = Data[1:ntrain,]
 Data.Test = Data[(ntrain+1):nrow(Data),]
 
 # Logistic Regression on Training Data
-glm.fit = glm(direction ~ . ,data = Data.Train,family = binomial)
+# glm.fit = glm(direction ~ . ,data = Data.Train,family = binomial)
+# summary(glm.fit)
+
+# consider another case that only use the first two features
+glm.fit = glm(direction ~ Top1 + Top2 ,data = Data.Train,family = binomial)
 summary(glm.fit)
 
+round(glm.fit$coefficients,3)
 
 # * In-Sample Predictions -------------------------------------------------
 
-# Get predictions
+# Get predictions and errors
 yhat = predict(glm.fit, type = "response")
-yhat = ifelse(yhat < 0.5, 0,1)
+Data.Train$lastIndex  = yhat
 
-# misclassifications
-result = data.frame(direction = Data.Train$direction,prediction = yhat)
-result$error = ifelse(result$direction != result$prediction,1,0)
+Data.Train$lastPrediction = ifelse(Data.Train$lastIndex >=0.5, 1, 0)
+Data.Train$lastError  = Data.Train$direction - Data.Train$lastPrediction
 
-# Number of misclassified cases
-misclas = sum(result$error)
+# Number of misclassified cases (in % of total sample)
+misclasTrain = round(sum(Data.Train$lastError!=0)/nrow(Data.Train)*100, digits = 1)
 
-# False positives 
-x = ifelse(result$prediction == 1 & result$direction == 0, 1, 0)
-falPos = sum(x)
+# False positives (in % of negatives)
+x = ifelse(Data.Train$lastPrediction == 1 & Data.Train$direction == 0, 1, 0)
+falPosTrain = round(sum(x)/length(Data.Train$direction[Data.Train$direction == 0])*100, digits = 1)
 
-# False negatives 
-x = ifelse(result$prediction == 0 & result$direction == 1, 1, 0)
-falNeg = sum(x)
+# False negatives (in % of positives)
+x = ifelse(Data.Train$lastPrediction == 0 & Data.Train$direction == 1, 1, 0)
+falNegTrain = round(sum(x)/length(Data.Train$direction[Data.Train$direction == 1])*100, digits = 1)
 
 # compute the accuracy rate
-mean(result$direction == result$prediction)
+acTrain = round(mean(Data.Train$direction == Data.Train$lastPrediction)*100,2)
 
-# compute the MSE
-
-
-
-# * In-sample with first two variables ------------------------------------
-
-# Logistic Regression on Training Data
-glm.fit = glm(direction ~ Top1+Top2 ,data = Data.Train,family = binomial)
-summary(glm.fit)
-
-
-# * In-Sample Predictions -------------------------------------------------
-
-# Get predictions
-yhat = predict(glm.fit, type = "response")
-yhat = ifelse(yhat < 0.5, 0,1)
-
-# misclassifications
-result = data.frame(direction = Data.Train$direction,prediction = yhat)
-result$error = ifelse(result$direction != result$prediction,1,0)
-
-# Number of misclassified cases
-misclas = sum(result$error)
-
-# False positives 
-x = ifelse(result$prediction == 1 & result$direction == 0, 1, 0)
-falPos = sum(x)
-
-# False negatives 
-x = ifelse(result$prediction == 0 & result$direction == 1, 1, 0)
-falNeg = sum(x)
-
-# compute the accuracy rate
-mean(result$direction == result$prediction)
-
-
+# MSE
+MSETrain = round(mean(Data.Train$lastError^2),2)
 
 # * Out-of-Sample Predictions ---------------------------------------------
 
-
-# Get predictions
+# Get predictions and errors
 yhat = predict(glm.fit, type = "response", newdata = Data.Test)
-yhat = ifelse(yhat < 0.5, 0,1)
+Data.Test$lastIndex  = yhat
 
-# misclassifications
-result = data.frame(direction = Data.Test$direction,prediction = yhat)
-result$error = ifelse(result$direction != result$prediction,1,0)
-table(result$direction,result$prediction)
+Data.Test$lastPrediction = ifelse(Data.Test$lastIndex >=0.5, 1, 0)
+Data.Test$lastError  = Data.Test$direction - Data.Test$lastPrediction
 
-# Number of misclassified cases
-misclas = sum(result$error)
+# Number of misclassified cases (in % of total sample)
+misclasTest = round(sum(Data.Test$lastError!=0)/nrow(Data.Test)*100, digits = 1)
 
-# False positives 
-x = ifelse(result$prediction == 1 & result$direction == 0, 1, 0)
-falPos = sum(x)
+# False positives (in % of negatives)
+x = ifelse(Data.Test$lastPrediction == 1 & Data.Test$direction == 0, 1, 0)
+falPosTest = round(sum(x)/length(Data.Test$direction[Data.Test$direction == 0])*100, digits = 1)
 
-# False negatives 
-x = ifelse(result$prediction == 0 & result$direction == 1, 1, 0)
-falNeg = sum(x)
+# False negatives (in % of positives)
+x = ifelse(Data.Test$lastPrediction == 0 & Data.Test$direction == 1, 1, 0)
+falNegTest = round(sum(x)/length(Data.Test$direction[Data.Test$direction == 1])*100, digits = 1)
 
 # compute the accuracy rate
-mean(result$direction == result$prediction)
+acTest = round(mean(Data.Test$direction == Data.Test$lastPrediction)*100,2)
+
+# MSE
+MSETest = round(mean(Data.Test$lastError^2),2)
+
 
 
 
 # KNN ---------------------------------------------------------------------
 set.seed(123)
 # Run the KNN algorithm for K = 1,10,25
-xvars = c("Top1","Top2"
-          #,"Top3","Top4","Top5","Top6","Top7","Top8","Top9","Top10"
-          )
+xvars = c("Top1","Top2" ,"Top3","Top4","Top5")
 yvars = "direction"
 
 # out-of-sample prediction
