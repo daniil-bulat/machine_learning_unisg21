@@ -1,4 +1,12 @@
 # Explorative Data Analysis
+# Machine Learning Final Project
+# Reddit — WallStreetBets Sentiment Analysis / Machine Learning
+
+#                      Haochen Li
+#                     Giovanni Magagnin
+#                        Jonas Huwyler
+#                       Daniil Bulat
+
 library(ggplot2)
 library(ggthemes)
 library(tidyr)
@@ -36,7 +44,7 @@ plot_data_2 %>%
                                         size = 0.5, linetype = "solid"),
         strip.text = element_text(face = "bold"))
 
-#################################### Sentiment ################################
+########################### Histogram Sentiment ################################
 ggplot(data=plot_data, aes(scores_avg)) + 
   geom_histogram(col="darkgreen", 
                  fill="gray") + 
@@ -48,7 +56,7 @@ ggplot(data=plot_data, aes(scores_avg)) +
         strip.text = element_text(face = "bold"))
 
 
-########################### Day / Sentiment ####################################
+####################### Box Plot Day / Sentiment ###############################
 weekdays = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday", "Sunday")
 plot_data$day = weekdays(as.Date(plot_data$timestamp))
 mean(plot_data$scores_avg)
@@ -59,7 +67,7 @@ plot_data$day = factor(plot_data$day , levels=weekdays)
 boxplot(plot_data$scores_avg ~ plot_data$day , col=rgb(0.2,0.8,0.6,0.8,1) , ylab="Mean Sentiment Score" , 
         xlab="Weekdays")
 
-############################## Time Series #####################################
+########################### Sentiment aver Weekdays ############################
 # Time Series of Sentiment over Weekdays
 plot_data$sent = ifelse(plot_data$scores_avg > 0,"positiv", ifelse(plot_data$scores_avg==0, "neutral", "negativ"))
 
@@ -98,10 +106,8 @@ ggplot() +
         strip.text = element_text(face = "bold")) +
   theme(axis.text.x = element_text(size = 10))
 
-
-
 ### PART II - EDA of combined data set 5 features
-# Top 5 Data
+# create data frame with 5 most commented post per day
 data = read.csv("~/Desktop/Uni/FS21/Machine Learning/machine_learning_unisg21/Final Paper/Data/sentiment/reddit_sentiment.csv")
 data = data[,2:8]
 data$texlen = nchar(data$text)
